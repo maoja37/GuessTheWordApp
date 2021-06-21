@@ -24,7 +24,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.android.guesstheword.R
@@ -36,7 +35,8 @@ import com.example.android.guesstheword.databinding.ScoreFragmentBinding
 class ScoreFragment : Fragment() {
 
     private lateinit var viewModel: ScoreViewModel
-    private  lateinit var viewModelFactory: ScoreViewModelFactory
+    private lateinit var viewModelFactory: ScoreViewModelFactory
+
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -51,27 +51,27 @@ class ScoreFragment : Fragment() {
                 false
         )
 
-        // Get args using by navArgs property delegate
         val scoreFragmentArgs by navArgs<ScoreFragmentArgs>()
+
         viewModelFactory = ScoreViewModelFactory(scoreFragmentArgs.score)
-        viewModel = ViewModelProviders.of(this,viewModelFactory)
+        viewModel = ViewModelProvider(this, viewModelFactory)
                 .get(ScoreViewModel::class.java)
 
+        binding.scoreViewModel = viewModel
 
+        // Add observer for score
         viewModel.score.observe(viewLifecycleOwner, Observer { newScore ->
             binding.scoreText.text = newScore.toString()
         })
-        binding.playAgainButton.setOnClickListener { viewModel.onPlayAgain() }
-        viewModel.eventGameFinish.observe(viewLifecycleOwner, Observer { playAgain->
-            if (playAgain){
+
+        // Navigates back to title when button is pressed
+        viewModel.eventPlayAgain.observe(viewLifecycleOwner, Observer { playAgain ->
+            if (playAgain) {
                 findNavController().navigate(ScoreFragmentDirections.actionRestart())
                 viewModel.onPlayAgainComplete()
             }
         })
-        viewModelFactory = ScoreViewModelFactory(scoreFragmentArgs.score)
 
         return binding.root
     }
-
-
 }
