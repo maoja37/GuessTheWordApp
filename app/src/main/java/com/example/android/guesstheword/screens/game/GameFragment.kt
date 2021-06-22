@@ -55,15 +55,9 @@ class GameFragment : Fragment() {
         // Set the viewmodel for databinding - this allows the bound layout access to all of the
         // data in the VieWModel
         binding.gameViewModel = viewModel
+        binding.setLifecycleOwner(this)
 
         /** Setting up LiveData observation relationship **/
-        viewModel.word.observe(viewLifecycleOwner, Observer { newWord ->
-            binding.wordText.text = newWord
-        })
-
-        viewModel.score.observe(viewLifecycleOwner, Observer { newScore ->
-            binding.scoreText.text = newScore.toString()
-        })
 
         viewModel.currentTime.observe(viewLifecycleOwner, Observer { newTime ->
             binding.timerText.text = DateUtils.formatElapsedTime(newTime)

@@ -58,11 +58,8 @@ class ScoreFragment : Fragment() {
                 .get(ScoreViewModel::class.java)
 
         binding.scoreViewModel = viewModel
+        binding.setLifecycleOwner(this)
 
-        // Add observer for score
-        viewModel.score.observe(viewLifecycleOwner, Observer { newScore ->
-            binding.scoreText.text = newScore.toString()
-        })
 
         // Navigates back to title when button is pressed
         viewModel.eventPlayAgain.observe(viewLifecycleOwner, Observer { playAgain ->
